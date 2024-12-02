@@ -7,15 +7,15 @@ from simulation import (
 )
 from web.schemas import (
     PeriodInfo,
-    SimulationData,
-    SimulationInfo,
+    SimulationDataResponse,
     SimulationRequest,
+    SimulationResponse,
 )
 
 router = APIRouter(prefix='', tags=['Simulation'])
 
 
-@router.post('/simulate_future_value', response_model=SimulationInfo)
+@router.post('/simulate_future_value', response_model=SimulationResponse)
 def simulate_future_value(simulation_data: SimulationRequest):
     simulation = FixedInterestSimulator(
         simulation_data.initial_amount,
@@ -25,12 +25,14 @@ def simulate_future_value(simulation_data: SimulationRequest):
 
     future_value = simulation.simulate(simulation_data.periods)
 
-    return SimulationInfo(
+    return SimulationResponse(
         periods=simulation_data.periods, future_value=future_value
     )
 
 
-@router.post('/simulate_future_value_data', response_model=SimulationData)
+@router.post(
+    '/simulate_future_value_data', response_model=SimulationDataResponse
+)
 def simulate_future_value_data(simulation_data: SimulationRequest):
     simulation = FixedInterestDataSimulator(
         simulation_data.initial_amount,
@@ -46,7 +48,7 @@ def simulate_future_value_data(simulation_data: SimulationRequest):
         month_info.update(data)
         future_value_data.append(PeriodInfo.model_validate(month_info))
 
-    return SimulationData(simulation=future_value_data)
+    return SimulationDataResponse(simulation=future_value_data)
 
 
 @router.post(
