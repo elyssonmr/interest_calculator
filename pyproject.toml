@@ -16,6 +16,9 @@ ruff = "^0.7.4"
 taskipy = "^1.14.0"
 
 
+[tool.poetry.group.web.dependencies]
+fastapi = {extras = ["standard"], version = "^0.115.5"}
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
@@ -35,16 +38,17 @@ quote-style = 'single'
 
 [tool.pytest.ini_options]
 pythonpath = "."
-addopts = ' --cov=simulation --cov-report term-missing -p no:warnings'
+addopts = ' --cov=simulation --cov=web --cov-report term-missing -p no:warnings'
 asyncio_mode = 'auto'
 
 [tool.coverage.run]
-omit = ['']
+omit = ['*/tests/*']
 
 [tool.taskipy.tasks]
 lint = 'ruff check . && ruff check . --diff'
-format = 'ruff check . --fix && ruff format .'
+format = 'ruff check . --fix; ruff format .'
 run = 'python .'
 pre_test = 'task lint'
 test = 'pytest -s -vv'
 post_test = 'coverage html'
+server = 'fastapi dev web/app.py'
