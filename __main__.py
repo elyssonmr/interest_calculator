@@ -1,8 +1,8 @@
 from decimal import Decimal
 
 from simulation.fixed_income import (
+    FixedInterestDataSimulator,
     FixedInterestSimulator,
-    FixedInterestDataSimulator
 )
 
 EXIT_OPTION = 3
@@ -49,7 +49,7 @@ while option != EXIT_OPTION:
             simulator = FixedInterestDataSimulator(
                 initial_amount, monthly_interest, monthly_contribution
             )
-            with open('simulation.csv', 'w') as csv_file:
+            with open('simulation.csv', 'w', encoding='utf-8') as csv_file:
                 csv_output = simulator.generate_csv(period)
                 csv_file.write(csv_output.getvalue())
 
